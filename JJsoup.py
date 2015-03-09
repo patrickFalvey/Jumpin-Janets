@@ -1,6 +1,7 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import *
 import sys
+import re
 
 
 scores = []
@@ -10,7 +11,7 @@ clean = {}
 url = "http://scores.espn.go.com/ncb/scoreboard"
 r = requests.get(url)
 soup = BeautifulSoup(r.content)
-team = soup.find_all('p',{'class':'team-name'})
+team = soup.select('p span a')
 score = soup.find_all('li',{'class':'final'})
 
 
@@ -28,7 +29,7 @@ for i in range(len(team)):
     clean[teams[i]] = scores[i]
 
 for key,value in clean.items():
-    print(str(key) + '/' + str(value)) 
+    print(str(key) + '/ ' + str(value)) 
 
 file = open('scoreData.txt','w')
 file = file.write(str(clean))

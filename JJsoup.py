@@ -28,7 +28,7 @@ for i in range(len(team)):
     clean[teams[i]] = scores[i]
 
 for key,value in clean.items():
-    print(str(key) + ' scored ' + str(value) + ' points.') 
+    print(str(key) + '/' + str(value)) 
 
 file = open('scoreData.txt','w')
 file = file.write(str(clean))

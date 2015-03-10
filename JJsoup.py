@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import dicttoxml
 import requests
-import datetime
 import time
 import sys
 
@@ -40,12 +39,9 @@ while True:
 
     # Save data to disk
     def saveData(cleanxml):
-        now=int(time.time())
-        scoreData=open('scoreData.txt','w')
-        timeStamp=scoreData.write(str(now))
+        scoreData=open('scoreData.xml','w')
         scoreData=scoreData.write(str(cleanxml))
         
-
         
     team,score=scrape(url)    
     saveData(dataScrub(team,score))

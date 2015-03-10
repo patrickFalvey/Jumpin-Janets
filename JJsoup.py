@@ -12,7 +12,9 @@ url="http://scores.espn.go.com/ncb/scoreboard"
 
 
 
+
 # Scrape website with Beautiful Soup
+
 def scrape(website):
     r=requests.get(website)
     soup=BeautifulSoup(r.content)
@@ -22,6 +24,7 @@ def scrape(website):
 
 
 # Refine data and return it in XML format
+
 def dataScrub(x,y):
     for name in x:
         teams.append(name.text)    
@@ -37,6 +40,7 @@ def dataScrub(x,y):
 
 
 # Save data to disk
+
 def saveData(cleanxml):   
     scoreData=open('scoreData.txt','w')
     scoreData=scoreData.write(str(cleanxml))

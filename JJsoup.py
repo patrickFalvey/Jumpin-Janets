@@ -39,10 +39,12 @@ while True:
 
 
     # Save data to disk
-    def saveData(cleanxml):   
+    def saveData(cleanxml):
+        now=int(time.time())
         scoreData=open('scoreData.txt','w')
-        timeStamp=scoreData.write(str(datetime.datetime.now()))
+        timeStamp=scoreData.write(str(now))
         scoreData=scoreData.write(str(cleanxml))
+        
 
         
     team,score=scrape(url)    

@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schedule>
+  <week1>
+    <game date="090415" start="0930">
+      <team type="away" name="packers" />
+      <team type="home" name="seahawks" />
+    </game>
+    <game date="090715" start="0930">
+      <team type="away" name="saints" />
+      <team type="home" name="falcons" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="vikings" />
+      <team type="home" name="rams" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="browns" />
+      <team type="home" name="steelers" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="jaguars" />
+      <team type="home" name="eagles" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="raiders" />
+      <team type="home" name="jets" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="bengals" />
+      <team type="home" name="ravens" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="bills" />
+      <team type="home" name="bears" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="redskins" />
+      <team type="home" name="texans" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="titans" />
+      <team type="home" name="chiefs" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="patriots" />
+      <team type="home" name="dolphins" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="panthers" />
+      <team type="home" name="buccaneers" />
+    </game>
+    <game date="090715" start="0930">
+      <team type="away" name="49ers" />
+      <team type="home" name="cowboys" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="colts" />
+      <team type="home" name="broncos" />
+    </game>
+    <game date="090815" start="1430">
+      <team type="away" name="giants" />
+      <team type="home" name="lions" />
+    </game>
+    <game date="090715" start="1430">
+      <team type="away" name="chargers" />
+      <team type="home" name="cardinals" />
+    </game>
+    <bye>
+      <none />
+    </bye>
+  </week1>
+</schedule>

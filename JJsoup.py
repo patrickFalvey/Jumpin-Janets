@@ -24,6 +24,7 @@ while True:
 
     # Refine data and return it in XML format
     def dataScrub(x,y):
+        dopexml = ''
         for name in x:
             teams.append(name.text)    
         for num in y:
@@ -36,15 +37,27 @@ while True:
         cleanxml=dicttoxml.dicttoxml(clean)
         return cleanxml
 
+    def filterxml(cleanxml):
+        dopexml = ''
+        for i in cleanxml:
+            if i == '&':
+                i = '&amp;'
+                v = i
+                dopexml = dopexml + v
+            else:
+                dopexml = dopexml + i
+        print dopexml
+        return dopexml
+
 
     # Save data to disk
-    def saveData(cleanxml):
+    def saveData(dopexml):
         scoreData=open('scoreData.xml','w')
-        scoreData=scoreData.write(str(cleanxml))
+        scoreData=scoreData.write(dopexml)
         
         
-    team,score=scrape(url)    
-    saveData(dataScrub(team,score))
+    team,score=scrape(url)
+    saveData(filterxml(dataScrub(team,score)))
     time.sleep(300)
 
 

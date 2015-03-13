@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<scores>
+  <week1 date="090715">
+    <team team="packers" score="36" />
+    <team name="seahawks" score="42" />
+    <team name="saints" score="64" />
+    <team name="falcons" score="7" />
+    <team name="vikings" score="14" />
+    <team name="rams" score="31" />
+    <team name="browns" score="8"></team>
+    <team name="steelers" score="21" />
+    <team name="jaguars" score="38" />
+    <team name="eagles" score="7" />
+    <team name="raiders" score="68" />
+    <team name="jets" score="34" />
+    <team name="bengals" score="71" />
+    <team name="ravens" score="52" />
+    <team name="bills" score="28" />
+    <team name="bears" score="29" />
+    <team name="redskins" score="31" />
+    <team name="texans" score="31" />
+    <team name="titans" score="52" />
+    <team name="chiefs" score="18" />
+    <team name="patriots" score="7" />
+    <team name="dophins" score="23" />
+    <team name="panthers" score="42" />
+    <team name="buccaneers" score="16" />
+    <team name="49ers" score="49" />
+    <team name="cowboys" score="0" />
+    <team name="colts" score="14" />
+    <team name="broncos" score="81" />
+  </week1>
+  <week1 date="090815">
+    <team name="giants" score="29" />
+    <team name="lions" score="3" />
+    <team name="chargers" score="14" />
+    <team name="cardinals" score="0" />
+  </week1>
+</scores>

@@ -37,6 +37,8 @@ while True:
         cleanxml=dicttoxml.dicttoxml(clean)
         return cleanxml
 
+    
+    #Remove any special characters 
     def filterxml(cleanxml):
         dopexml = ''
         for i in cleanxml:
@@ -46,7 +48,6 @@ while True:
                 dopexml = dopexml + v
             else:
                 dopexml = dopexml + i
-        print dopexml
         return dopexml
 
 

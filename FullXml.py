@@ -3,8 +3,8 @@ from time import strftime, gmtime, localtime
 from bs4 import BeautifulSoup
 import requests
 import dicttoxml
-from lxml import etree
-
+from xml.etree.ElementTree import *
+##import xml.etree.ElementTree as ET
 
 gameList = []
 gametime = []
@@ -23,8 +23,7 @@ def scrape(website):
     score=soup.find_all('li',{'class':'final'})
     hometeam = soup.find_all('div', {'class':'team home'})
     gameStatus = soup.find_all('div',{'class':'game-status'})
-    awayteam = soup.find_all('div', {'class':'team visitor'})
-    
+    awayteam = soup.find_all('div', {'class':'team visitor'})    
     return team,score,gameStatus,awayteam,hometeam
 
 
@@ -57,45 +56,38 @@ def dataScrub(team,score,gameStatus,awayteam,hometeam):
         gameList.append(num)
     for i in range(len(team)):
                 clean[teams[i]]=scores[i]
-        
-    print '\n\ngameList = \n\n' + str(gameList)
-    print '\n\nscores = \n\n' + str(scores)
-    print '\n\nhomeTeams = \n\n' + str(homeTeams)
-    print '\n\nawayTeams = \n\n' + str(awayTeams)
-    print '\n\nteams = \n\n' + str(teams)
-    print '\n\ngametime = \n\n' + str(gametime)
-    print '\n\nteam scores = \n\n' + str(clean)
     
     def makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime):
         scheduleList = []
-        for i in range(len(gameList)):
-            schedule = {}
-            schedule['hometeam'] = homeTeams[i]
-            schedule['awayteam'] = awayTeams[i]
-            schedule['homescore'] = clean[homeTeams[i]]
-            schedule['awayscore'] = clean[awayTeams[i]]
-            schedule['gametime'] = gametime[i]
-            scheduleList.append(schedule)
-        return scheduleList
-        
-        
-    scheduleList = makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime)       
-    def makeXml(stats):
-        xmlList = []
-        root = dicttoxml.dicttoxml(scheduleList[0],custom_root='score',attr_type=False)
-        base = etree.fromstring(root)
-        for i in range(1,len(scheduleList)):
-            xml = dicttoxml.dicttoxml(scheduleList[i],custom_root='game',attr_type=False)
-            xml = etree.fromstring(xml)
-            base.append(xml)
-        print etree.tostring(base)
-        xmlFile = etree.tostring(base)
-        
+        score = Element('score')
+        game = SubElement(score, 'game')
+        game.attrib['hometeam']= homeTeams[0]
+        game.attrib['awayteam']= awayTeams[0]
+        awayscore = SubElement(game, 'awayscore')
+        awayscore.text = clean[awayTeams[0]]
+        homescore = SubElement(game, 'homescore')
+        homescore.text = clean[homeTeams[0]]
+        gameTime = SubElement(game, 'gametime')
+        gameTime.text = gametime[0]
+
+        for i in range(1,len(gameList)):           
+            game = Element('game')
+            game.attrib['hometeam']= homeTeams[i]
+            game.attrib['awayteam']= awayTeams[i]
+            awayscore = SubElement(game, 'awayscore')
+            awayscore.text = clean[awayTeams[i]]
+            homescore = SubElement(game, 'homescore')
+            homescore.text = clean[homeTeams[i]]
+            gameTime = SubElement(game, 'gametime')
+            gameTime.text = gametime[i]
+            score.append(game)
+        xmlFile = tostring(score)
+        print xmlFile
         with open('scoreFile.xml','w') as scoreData:
             scoreData.write(str(xmlFile))
             
-            
-    makeXml(scheduleList)
+    makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime)       
+
             
         
         

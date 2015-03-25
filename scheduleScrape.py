@@ -1,11 +1,11 @@
 import time
 from time import strftime, gmtime, localtime
+from datetime import *
 from bs4 import BeautifulSoup
 import requests
 import dicttoxml
-##from xml.dom.minidom import parseString,getDOMImplementation
 from xml.etree.ElementTree import *
-##import xml.etree.ElementTree as ET
+
 
 gameList = []
 gametime = []
@@ -14,9 +14,13 @@ homeTeams = []
 teams=[]
 scores=[]
 clean={}
-url="http://scores.espn.go.com/ncb/scoreboard?date=20150326"
+d = date.today() + timedelta(days=1)
+tomDateFile = datetime.strftime(d,'%Y%m%d')
+tomDateGame = datetime.strftime(d,'%m/%d/%y')
+tomDateGame = tomDateGame[1:]
+url='http://scores.espn.go.com/ncb/scoreboard?date='+tomDateFile
 currentTime=strftime('%H%M',localtime())
-currentDate=strftime('%Y%m%d',localtime())
+fileDate=strftime('%Y%m%d',localtime())
 dayOfWeek=strftime('%A',localtime())
 
 def scrape(website):
@@ -90,18 +94,23 @@ def makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime,gameday):
         gameTime.text = gametime[i]
         day.insert(i,game)
         startdate = SubElement(game, 'startdate')
-        startdate.text = gameday
+        startdate.text = tomDateGame
         
     bye = Element('bye')
     none = SubElement(bye, 'none')
     day.insert(len(gameList),bye)
     xmlFile = tostring(score)
     print xmlFile
-    with open('scheduleFile.xml','w') as scoreData:
+    with open('scheduleFile'+tomDateFile+'.xml','w') as scoreData:
         scoreData.write(str(xmlFile))
         
         
 team,score,gameStatus,awayteam,hometeam,gamedate = scrape(url)
 dataScrub(team,score,gameStatus,awayteam,hometeam,gamedate)
-makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime,gameday)
+def gamesCheck(gameList,scores,homeTeams,awayTeams,teams,gametime,gameday):
+    if len(gameList) != 0:
+        makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime,gameday)       
+    else:
+        return -1
+gamesCheck(gameList,scores,homeTeams,awayTeams,teams,gametime,gameday)
 

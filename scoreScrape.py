@@ -5,15 +5,17 @@ import requests
 import dicttoxml
 from xml.etree.ElementTree import *
 import sys
-
+import pytz
 
 d = datetime.date.today()
 fileDate = datetime.date.strftime(d,'%Y%m%d')
 
 def startScrape():
     while True:
-        awayNotPlaying = []
-        homeNotPlaying = []
+        awayPlayingScheduled = []
+        homePlayingScheduled = []
+        awayNotPlayingScheduled = []
+        homeNotPlayingScheduled = []
         finalList = []
         gameList = []
         gametime = []
@@ -25,7 +27,7 @@ def startScrape():
         currentTime=time.strftime('%I:%M %p',time.localtime())
         currentDate=time.strftime('%m/%d/%Y',time.localtime())
 ##        url="http://scores.espn.go.com/ncb/scoreboard?date=" + fileDate
-        url="http://scores.espn.go.com/ncb/scoreboard?date=20150323"
+        url="http://scores.espn.go.com/ncb/scoreboard?date=20150320"
         def scrape(website):
             r=requests.get(website)
             soup=BeautifulSoup(r.content)
@@ -33,7 +35,7 @@ def startScrape():
             score=soup.find_all('li',{'class':'final'})
             hometeam = soup.find_all('div', {'class':'team home'})
             gameStatus = soup.find_all('div',{'class':'game-status'})
-            awayteam = soup.find_all('div', {'class':'team visitor'})    
+            awayteam = soup.find_all('div', {'class':'team visitor'})
             return team,score,gameStatus,awayteam,hometeam
 
 
@@ -50,25 +52,38 @@ def startScrape():
                      teamName = i.get('title')
                      if teamName != None:
                          awayTeams.append(teamName)
-            for i in teamsScheduledHome:
-                if i in homeTeams:
+            for i in homeTeams:
+                print 'hometeam = ' + i
+                if i in teamsScheduledHome:
+                    homePlayingScheduled.append(i)
+                else:
                     pass
+            for i in teamsScheduledHome:
+                if i not in homeTeams:
+                    homeNotPlayingScheduled.append(i)
                 else:
-                    homeNotPlaying.append(i)
-            for i in teamsScheduledAway:
-                if i in awayTeams:
+                    pass               
+            for i in awayTeams:
+                if i in teamsScheduledAway:
                     print "I'm in!"
+                    awayPlayingScheduled.append(i)
                 else:
-                    awayNotPlaying.append(i)
-            for name in awayTeams:
-                teams.append(name)
-            for name in homeTeams:
-                teams.append(name)
+                    pass
+            for i in teamsScheduledAway:
+                if i not in awayTeams:
+                    awayNotPlayingScheduled.append(i)
+                else:
+                    pass 
+            
             for num in score:
                 scores.append(num.text)    
             for i in scores:
                 if i=='T':
                     scores.remove(i)
+            for i in range(len(awayTeams)):
+                teams.append(awayTeams[i])
+                teams.append(homeTeams[i])
+                
             for stat in gameStatus:
                 if 'Final' in stat.contents[0].text:
                     over = 'Final'
@@ -85,62 +100,64 @@ def startScrape():
                 gameList.append(num)
             for i in range(len(team)):
                         clean[teams[i]]=scores[i]
+##            print clean
             
-        def makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime,awayNotPlaying,homeNotPlaying):
+        def makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime,awayPlayingScheduled,homePlayingScheduled,awayNotPlayingScheduled,homeNotPlayingScheduled):
             scheduleList = []
             score = Element('score')
             score.attrib['filedate'] = currentDate
             score.attrib['filetime'] = currentTime
             game = SubElement(score, 'game')
-            game.attrib['hometeam']= homeTeams[0]
-            game.attrib['awayteam']= awayTeams[0]
+            game.attrib['hometeam']= homePlayingScheduled[0]
+            game.attrib['awayteam']= awayPlayingScheduled[0]
             awayscore = SubElement(game, 'awayscore')
-            awayscore.text = clean[awayTeams[0]]
+            awayscore.text = clean[awayPlayingScheduled[0]]
             homescore = SubElement(game, 'homescore')
-            homescore.text = clean[homeTeams[0]]
+            homescore.text = clean[homePlayingScheduled[0]]
             gameTime = SubElement(game, 'starttime')
             gameTime.text = gametime[0]
             
-            for i in range(1,len(homeTeams)):           
+            for i in range(1,len(homePlayingScheduled)):           
                 game = Element('game')
-                game.attrib['hometeam']= homeTeams[i]
-                game.attrib['awayteam']= awayTeams[i]
+                game.attrib['hometeam']= homePlayingScheduled[i]
+                game.attrib['awayteam']= awayPlayingScheduled[i]
                 awayscore = SubElement(game, 'awayscore')
-                awayscore.text = clean[awayTeams[i]]
+                awayscore.text = clean[awayPlayingScheduled[i]]
                 homescore = SubElement(game, 'homescore')
-                homescore.text = clean[homeTeams[i]]
+                homescore.text = clean[homePlayingScheduled[i]]
                 gameTime = SubElement(game, 'starttime')
                 gameTime.text = gametime[i]
                 score.append(game)
                 
-            for i in range(len(awayNotPlaying)):           
+            for i in range(len(awayNotPlayingScheduled)):           
                 game = Element('game')
-                game.attrib['hometeam']= homeNotPlaying[i]
-                game.attrib['awayteam']= awayNotPlaying[i]
+                game.attrib['hometeam']= homeNotPlayingScheduled[i]
+                game.attrib['awayteam']= awayNotPlayingScheduled[i]
                 awayscore = SubElement(game, 'awayscore')
                 awayscore.text = '0'
                 homescore = SubElement(game, 'homescore')
                 homescore.text = '0'
                 gameTime = SubElement(game, 'starttime')
-                gameTime.text = 'Final'
+                gameTime.text = 'Not Yet'
                 score.append(game)
             xmlFile = tostring(score)
             print xmlFile
             fileTime=time.strftime('%H%M',time.localtime())
             with open('scoreFile'+fileTime+'.xml','w') as scoreData:
                 scoreData.write(str(xmlFile))
+            with open('scoreFile.xml','w') as scoreData:
+                scoreData.write(str(xmlFile))
             
                
         team,score,gameStatus,awayteam,hometeam = scrape(url)
         dataScrub(team,score,gameStatus,awayteam,hometeam)
-##        makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime)
-        def gamesCheck(gameList,scores,homeTeams,awayTeams,teams,gametime,awayNotPlaying,homeNotPlaying):
+        def gamesCheck(gameList,scores,homeTeams,awayTeams,teams,gametime,awayPlayingScheduled,homePlayingScheduled,awayNotPlayingScheduled,homeNotPlayingScheduled):
             if len(gameList) != 0:
-                makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime,awayNotPlaying,homeNotPlaying)       
+                makeSchedule(gameList,scores,homeTeams,awayTeams,teams,gametime,awayPlayingScheduled,homePlayingScheduled,awayNotPlayingScheduled,homeNotPlayingScheduled)       
             else:
-                print 'No games playing yet'
+                print 'No games playing today'
                 time.sleep(3600)
-        gamesCheck(gameList,scores,homeTeams,awayTeams,teams,gametime,awayNotPlaying,homeNotPlaying)
+        gamesCheck(gameList,scores,homeTeams,awayTeams,teams,gametime,awayPlayingScheduled,homePlayingScheduled,awayNotPlayingScheduled,homeNotPlayingScheduled)
         time.sleep(65)
 
 
@@ -154,13 +171,13 @@ while True:
     teamsScheduledAway = []
     tree=parse('scheduleFile'+fileDate+'.xml')
     root=tree.getroot()
-    for team in root.iter('awayteam'):
+    for team in root.iter('awayTeam'):
         teamsScheduledAway.append(team.text)
         print team.text
-    for team in root.iter('hometeam'):
+    for team in root.iter('homeTeam'):
         teamsScheduledHome.append(team.text)
         print team.text
-    for gametime in root.iter('gametime'):
+    for gametime in root.iter('startTime'):
         count+=1
         roughTime = gametime.text
         if roughTime == 'Final':

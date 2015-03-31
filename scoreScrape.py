@@ -143,9 +143,9 @@ def startScrape():
             xmlFile = tostring(score)
             print xmlFile
             fileTime=time.strftime('%H%M',time.localtime())
-            with open('scoreFile'+fileTime+'.xml','w') as scoreData:
+            with open('scoringUpdate'+fileTime+'.xml','w') as scoreData:
                 scoreData.write(str(xmlFile))
-            with open('scoreFile.xml','w') as scoreData:
+            with open('scoringUpdate.xml','w') as scoreData:
                 scoreData.write(str(xmlFile))
             
                
